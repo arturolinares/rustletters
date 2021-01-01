@@ -19,6 +19,9 @@ actix-rt = "1.1.1"
 tokio = { version = "0.2.6", features = ["full"] }
 serde = "1.0.118"
 clap = "2.33.3"
+config = "0.10.1"
+uuid = { version = "0.8.1", features = ["v4"] }
+chrono = "0.4.15"
 
 [dependencies.sqlx]
 version = "0.4.1"

@@ -1,3 +1,5 @@
+use sqlx::PgPool;
+use rustletters::configuration::get_configuration;
 use rustletters::startup::run;
 use clap::App;
 use clap::Arg;
@@ -10,15 +12,21 @@ async fn main() -> std::io::Result<()> {
         .version("1.0")
         .about("Learnin application manage email subscriptions.")
         .arg(
-            Arg::with_name("port")
-                .short("p")
-                .long("port")
-                .value_name("PORT")
+            Arg::with_name("config")
+                .short("c")
+                .long("config")
+                .value_name("file")
                 .takes_value(true),
         )
         .get_matches();
 
-    let port = matches.value_of("port").unwrap_or("0");
+    let config_file = matches.value_of("config").unwrap_or("configuration");
+    let configuration = get_configuration(config_file).expect("Failed to read configuration.");
+    let port = configuration.application_port;
+    let connection_pool = PgPool::connect(&configuration.database.connection_string())
+        .await
+        .expect("Couldn't stablish a db connection");
+
     let listener =
         TcpListener::bind(format!("127.0.0.1:{}", port)).expect("Error trying to bind server.");
 
@@ -27,5 +35,5 @@ async fn main() -> std::io::Result<()> {
         listener.local_addr().unwrap().port()
     );
 
-    run(listener)?.await
+    run(listener, connection_pool)?.await
 }
