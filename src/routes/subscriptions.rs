@@ -11,11 +11,31 @@ pub struct Subscription {
     email: String,
 }
 
+#[tracing::instrument(
+	name = "Adding a new subscriber",
+	skip(pool, form),
+	fields(
+		email = %form.email,
+		name = %form.name
+	)
+)]
 pub async fn subscribe(
 	form: web::Form<Subscription>,
 	pool: web::Data<PgPool>
 ) -> Result<HttpResponse, HttpResponse> {
-	log::info!("Adding new subscriber {} ({}).", form.name, form.email);
+
+	insert_subscriber(&pool, &form)
+		.await
+		.map_err(|_| HttpResponse::InternalServerError().finish())?;
+
+	Ok(HttpResponse::Ok().finish())
+}
+
+#[tracing::instrument(
+	name = "Insert subscriber into database",
+	skip(pool, form)
+)]
+pub async fn insert_subscriber(pool: &PgPool, form: &Subscription) -> Result<(), sqlx::Error> {
 	sqlx::query!(
 		r#"
 		INSERT INTO subscriptions (id, email, name, subscribed_at)
@@ -26,14 +46,12 @@ pub async fn subscribe(
 		form.name,
 		Utc::now()
 	)
-	.execute(pool.get_ref())
+	.execute(pool)
 	.await
 	.map_err(|e| {
-		log::error!("Failed to create a new entry: {:?}", e);
-		HttpResponse::InternalServerError().finish()
+		tracing::error!("Failed to create a new entry: {:?}", e);
+		e
 	})?;
 
-	log::info!("New subscriber was saved successfully");
-
-	Ok(HttpResponse::Ok().finish())
+	Ok(())
 }

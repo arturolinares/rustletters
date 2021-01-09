@@ -1,9 +1,11 @@
-use uuid::Uuid;
-use sqlx::Executor;
-use sqlx::Connection;
-use sqlx::PgConnection;
 use rustletters::configuration::DatabaseSettings;
+use rustletters::telemetry::get_subscriber;
+use rustletters::telemetry::init_subscriber;
+use sqlx::Connection;
+use sqlx::Executor;
+use sqlx::PgConnection;
 use sqlx::PgPool;
+use uuid::Uuid;
 
 use rustletters::configuration::get_configuration;
 use rustletters::startup::run;
@@ -77,12 +79,22 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
     }
 }
 
-pub struct TestApp  {
+pub struct TestApp {
     pub address: String,
-    pub db_pool: PgPool
+    pub db_pool: PgPool,
+}
+
+lazy_static::lazy_static! {
+    static ref TRACING: () = {
+        let filter = if std::env::var("TEST_LOG").is_ok() { "debug" } else { "" };
+        let subscriber = get_subscriber("test".into(), filter.into());
+        init_subscriber(subscriber);
+    };
 }
 
 async fn spawn_app() -> TestApp {
+    lazy_static::initialize(&TRACING);
+
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
     let mut configuration = get_configuration("configuration").expect("Failed to read config file");

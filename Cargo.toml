@@ -22,8 +22,12 @@ clap = "2.33.3"
 config = "0.10.1"
 uuid = { version = "0.8.1", features = ["v4"] }
 chrono = "0.4.15"
-log = "0.4.11"
-env_logger = "0.8.2"
+tracing-subscriber = { version = "0.2.12", features = ["registry", "env-filter"] }
+tracing = "0.1.16"
+tracing-futures = "0.2.4"
+tracing-bunyan-formatter = "0.1.7"
+tracing-log = "0.1.1"
+tracing-actix-web = "0.2.1"
 
 [dependencies.sqlx]
 version = "0.4.1"
@@ -37,4 +41,5 @@ features = [
 ]
 
 [dev-dependencies]
+lazy_static = "1.4.0"
 reqwest = "0.10.10"

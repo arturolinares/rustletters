@@ -1,13 +1,16 @@
-use env_logger::Env;
-use sqlx::PgPool;
+use rustletters::telemetry::get_subscriber;
+use rustletters::telemetry::init_subscriber;
+use clap::{App, Arg};
 use rustletters::configuration::get_configuration;
 use rustletters::startup::run;
-use clap::App;
-use clap::Arg;
+use sqlx::PgPool;
 use std::net::TcpListener;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
+    let subscriber = get_subscriber("rustletters".into(), "info".into());
+    init_subscriber(subscriber);
+
     let matches = App::new("Rustletters")
         .author("Arturo Linares")
         .version("1.0")
@@ -21,8 +24,7 @@ async fn main() -> std::io::Result<()> {
         )
         .get_matches();
 
-    // initialize logger
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+
 
     let config_file = matches.value_of("config").unwrap_or("configuration");
     let configuration = get_configuration(config_file).expect("Failed to read configuration.");
@@ -41,3 +43,4 @@ async fn main() -> std::io::Result<()> {
 
     run(listener, connection_pool)?.await
 }
+
