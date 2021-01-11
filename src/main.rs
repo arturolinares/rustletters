@@ -1,6 +1,6 @@
-use sqlx::postgres::PgPoolOptions;
 use rustletters::telemetry::get_subscriber;
 use rustletters::telemetry::init_subscriber;
+use sqlx::postgres::PgPoolOptions;
 
 use rustletters::configuration::get_configuration;
 use rustletters::startup::run;
@@ -32,4 +32,3 @@ async fn main() -> std::io::Result<()> {
 
     run(listener, connection_pool)?.await
 }
-
