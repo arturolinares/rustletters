@@ -97,7 +97,7 @@ async fn spawn_app() -> TestApp {
 
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
-    let mut configuration = get_configuration("configuration").expect("Failed to read config file");
+    let mut configuration = get_configuration().expect("Failed to read config file");
     // prepare a new test database
     configuration.database.database_name = Uuid::new_v4().to_string();
     let connection_pool = prepare_db(&configuration.database).await;

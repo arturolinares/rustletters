@@ -1,0 +1,6 @@
+.env
+.target/
+tests
+Dockerfile
+migrations/
+docker-compos.yml
