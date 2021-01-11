@@ -1,4 +1,4 @@
-use std::convert::{ TryFrom, TryInto };
+use std::convert::{TryFrom, TryInto};
 
 #[derive(serde::Deserialize)]
 pub struct Settings {
@@ -38,7 +38,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 
 pub enum Environment {
     Local,
-    Production
+    Production,
 }
 
 impl Environment {
@@ -57,7 +57,10 @@ impl TryFrom<String> for Environment {
         match s.to_lowercase().as_str() {
             "local" => Ok(Self::Local),
             "production" => Ok(Self::Production),
-            other => Err(format!("{} is not supported as environment. Use either 'local' or 'production'" , other)),
+            other => Err(format!(
+                "{} is not supported as environment. Use either 'local' or 'production'",
+                other
+            )),
         }
     }
 }
