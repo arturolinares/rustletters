@@ -112,14 +112,14 @@ async fn spawn_app() -> TestApp {
 }
 
 async fn prepare_db(config: &DatabaseSettings) -> PgPool {
-    let _connection = PgConnection::connect(&config.connection_string_nodb())
+    let _connection = PgConnection::connect_with(&config.without_db())
         .await
         .expect("Failed to connect to test database.")
         .execute(&*format!(r#"CREATE DATABASE "{}";"#, config.database_name))
         .await
         .expect("Failed to create test database.");
 
-    let pool = PgPool::connect(&config.connection_string())
+    let pool = PgPool::connect_with(config.with_db())
         .await
         .expect("Failed to connect to test database.");
 

@@ -27,6 +27,7 @@ tracing-futures = "0.2.4"
 tracing-bunyan-formatter = "0.1.7"
 tracing-log = "0.1.1"
 tracing-actix-web = "0.2.1"
+serde-aux = "2.1.1"
 
 [dependencies.sqlx]
 version = "0.4.1"
