@@ -6,19 +6,19 @@ services:
   - name: rustletters
     envs:
       - key: APP_DATABASE__USERNAME
-        scope: RUNTIME
+        scope: RUN_TIME
         value: ${rustletters.USERNAME}
       - key: APP_DATABASE__PASSWORD
-        scope: RUNTIME
+        scope: RUN_TIME
         value: ${rustletters.PASSWORD}
       - key: APP_DATABASE__HOST
-        scope: RUNTIME
+        scope: RUN_TIME
         value: ${rustletters.HOSTNAME}
       - key: APP_DATABASE__PORT
-        scope: RUNTIME
+        scope: RUN_TIME
         value: ${rustletters.PORT}
       - key: APP_DATABASE__DATABASE_NAME
-        scope: RUNTIME
+        scope: RUN_TIME
         value: ${rustletters.DATABASE}
     dockerfile_path: Dockerfile
     source_dir: .
