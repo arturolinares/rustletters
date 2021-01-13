@@ -39,7 +39,9 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           cargo install --version=0.2.0 sqlx-cli --no-default-features --features postgres
-          SKIP_DOCKER=true ./scripts/init_db.sh
+          cp .env.sample .env
+          sqlx database create
+          sqlx migrate run
       - name: Check sqlx metadata file
         run: cargo sqlx prepare --check -- --bin rustletters
       - uses: actions-rs/cargo@v1
@@ -87,7 +89,8 @@ jobs:
           sudo apt-get install libpq-dev -y
           cargo install --version=0.2.0 sqlx-cli --no-default-features --features postgres
           cp .env.sample .env
-          docker-compose up -d
+          sqlx database create
+          sqlx migrate run
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
@@ -119,7 +122,9 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           cargo install --version=0.2.0 sqlx-cli --no-default-features --features postgres
-          SKIP_DOCKER=true ./scripts/init_db.sh
+          cp .env.sample .env
+          sqlx database create
+          sqlx migrate run
       - name: Run cargo-tarpaulin
         uses: actions-rs/tarpaulin@v0.1
         with:
