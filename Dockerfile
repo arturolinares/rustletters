@@ -21,8 +21,11 @@ COPY --from=cacher $CARGO_HOME $CARGO_HOME
 ENV SQLX_OFFLINE true
 RUN cargo build --release --bin rustletters
 
-FROM rust:1.48 AS runtime
-
+FROM debian:buster-slim AS runtime
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends openssl \
+    # Clean up
+    && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 WORKDIR app
 COPY --from=builder /app/target/release/rustletters rustletters
 COPY configuration configuration
