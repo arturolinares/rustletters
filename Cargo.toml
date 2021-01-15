@@ -28,6 +28,7 @@ tracing-bunyan-formatter = "0.1.7"
 tracing-log = "0.1.1"
 tracing-actix-web = "0.2.1"
 serde-aux = "2.1.1"
+unicode-segmentation = "1.7.1"
 
 [dependencies.sqlx]
 version = "0.4.1"
@@ -42,5 +43,6 @@ features = [
 ]
 
 [dev-dependencies]
+claim = "0.4.0"
 lazy_static = "1.4.0"
 reqwest = "0.10.10"
